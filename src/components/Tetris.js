@@ -18,6 +18,7 @@ const Tetris = () => {
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [cheats, setCheats] = useState(false);
 
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
   const [stage, setStage, rowsCleared, clearBottomRow] = useStage(player, resetPlayer);
@@ -93,8 +94,13 @@ const Tetris = () => {
     setPaused(!paused);
   };
 
+  const toggleCheats = () => {
+    setCheats(prevCheats => !prevCheats); 
+  };
+
   const move = ({ keyCode }) => {
     if (!gameOver) {
+      if (cheats) {
       if (keyCode === 37) {
         movePlayer(-1);
       } else if (keyCode === 39) {
@@ -110,7 +116,18 @@ const Tetris = () => {
       } else if (keyCode === 67) {
         clearBottomRow();
       }
+    } else {
+      if (keyCode === 37) {
+        movePlayer(-1);
+      } else if (keyCode === 39) {
+        movePlayer(1);
+      } else if (keyCode === 40) {
+        dropPlayer();
+      } else if (keyCode === 38) {
+        playerRotate(stage, 1);
     }
+  };
+};
   };
 
   return (
@@ -133,6 +150,19 @@ const Tetris = () => {
             </div>
           )}
           <StartButton callback={startGame} />
+          <button
+          onClick={toggleCheats}
+          style={{
+            opacity: cheats ? 1 : 0, 
+            cursor: 'pointer', 
+            position: 'absolute',
+            top: '65%',
+            left: '64%',
+
+          }}
+        >
+          Cheats enabled!!!
+        </button>
         </aside>
       </StyledTetris>
     </StyledTetrisWrapper>
