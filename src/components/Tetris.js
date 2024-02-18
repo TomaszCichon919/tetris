@@ -17,9 +17,10 @@ import StartButton from './StartButton';
 const Tetris = () => {
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
+  const [paused, setPaused] = useState(false);
 
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
-  const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
+  const [stage, setStage, rowsCleared, clearBottomRow] = useStage(player, resetPlayer);
   const [score, setScore, rows, setRows, level, setLevel] = useGameStatus(
     rowsCleared
   );
@@ -65,7 +66,7 @@ const Tetris = () => {
     } else {
       // Game over!
       if (player.pos.y < 1) {
-        console.log('GAME OVER!!!');
+        console.log('GAME OVER!!! LOOSER!!!');
         setGameOver(true);
         setDropTime(null);
       }
@@ -84,7 +85,13 @@ const Tetris = () => {
   // Custom hook by Dan Abramov
   useInterval(() => {
     drop();
-  }, dropTime);
+  }, dropTime, paused);
+  
+
+
+  const togglePause = () => {
+    setPaused(!paused);
+  };
 
   const move = ({ keyCode }) => {
     if (!gameOver) {
@@ -96,6 +103,12 @@ const Tetris = () => {
         dropPlayer();
       } else if (keyCode === 38) {
         playerRotate(stage, 1);
+      } else if (keyCode === 90) {
+        playerRotate(stage, -1);
+      }  else if (keyCode === 80) {
+        togglePause();
+      } else if (keyCode === 67) {
+        clearBottomRow();
       }
     }
   };

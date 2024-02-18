@@ -53,5 +53,21 @@ export const useStage = (player, resetPlayer) => {
     resetPlayer,
   ]);
 
-  return [stage, setStage, rowsCleared];
+  const clearBottomRow = () => {
+    setStage(prevStage => {
+      // Create a copy of the stage
+      const newStage = [...prevStage];
+      
+      // Remove the bottom row
+      newStage.pop();
+      
+      // Add a new empty row at the top
+      newStage.unshift(new Array(newStage[0].length).fill([0, 'clear']));
+      
+  
+      return newStage;
+    });
+  };
+
+  return [stage, setStage, rowsCleared, clearBottomRow];
 };
